@@ -10,7 +10,7 @@ export default {
     },
     methods: {
         getData() {
-            axios.get('http://localhost:8000/getData.php')
+            axios.get('http://localhost:8000/GetData')
                 .then(response => {
                     this.patients = response.data;
                 })

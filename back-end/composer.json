@@ -1,0 +1,16 @@
+{
+    "name": "driver/back-end",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Driver\\BackEnd\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pietro.marilei",
+            "email": "pietromrl0@gmail.com"
+        }
+    ],
+    "require": {}
+}

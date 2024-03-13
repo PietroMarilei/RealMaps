@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php 
 
-<head>
-    <meta charset="UTF-8">
-    <title>Import CSV to Database</title>
-</head>
+require_once __DIR__ . '/vendor/autoload.php';
 
-<body>
-    <form action="./uploadCSV.php" method="post" enctype="multipart/form-data">
-        <input type="file" name="csv_file" id="csv_file">
-        <input type="submit" value="Upload CSV" name="submit">
-    </form>
-</body>
+use Driver\BackEnd\App;
 
-</html>
+App::init($_SERVER["REQUEST_URI"]);

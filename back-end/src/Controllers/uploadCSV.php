@@ -8,7 +8,7 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once './db/dbConnector.php';
-
+//TODO: fare cartella helpers
 function sanitizeInput($input) {
     $input = str_replace(',', '-', $input);
     $input = preg_replace("/[^a-zA-Z0-9\s\.\-\_]/", "", $input);
