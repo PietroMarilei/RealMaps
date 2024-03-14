@@ -16,7 +16,7 @@ export default {
 
     methods: {
         detectEpidemics() {
-            axios.get(`http://localhost:8000/AnalyzeData`, {
+            axios.get(`http://localhost:8000/00000AnalyzeData`, {
                 params: {
                     caseThreshold: this.caseThreshold,
                     startDate: this.startDate,
