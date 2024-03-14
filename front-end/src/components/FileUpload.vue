@@ -22,7 +22,7 @@ export default {
 
             this.uploadStatus = 'Caricamento in corso...';
 
-            fetch('http://localhost:8000/uploadCSV.php', { 
+            fetch('http://localhost:8000/UploadData', { 
                 method: 'POST',
                 body: formData,
             })
