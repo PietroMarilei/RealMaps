@@ -5,15 +5,16 @@ namespace Driver\BackEnd;
 
 use Driver\BackEnd\Controllers\GetDataController;
 use Driver\BackEnd\Controllers\UploadDataController;
-use Driver\BackEnd\Controllers\SearchDataController; 
-
+use Driver\BackEnd\Controllers\SearchDataController;
+use Driver\BackEnd\Controllers\AnalyzeDataController;
 // $routes = [
 //     "POST" => [
 //         "/GetData" => GetDataController::class,
 //     ]
 // ]
 
-class App {
+class App
+{
     public static function init($requestUri)
     {
         $uriComponents = explode('?', $requestUri);
@@ -25,11 +26,11 @@ class App {
             $controller = new GetDataController();
         } else if ($path === "/UploadData") {
             $controller = new UploadDataController();
-        } else if ($path === "/SearchData") { 
+        } else if ($path === "/SearchData") {
             $controller = new SearchDataController();
-        }
-        
-        else {
+        } else if ($path === "/AnalyzeData") {
+            $controller = new AnalyzeDataController();
+        } else {
             http_response_code(404);
             echo json_encode(['error' => '404 not found']);
             return;
@@ -43,8 +44,6 @@ class App {
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-        $controller->run(); 
-       }
-
-
+        $controller->run();
+    }
 }
