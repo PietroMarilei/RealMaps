@@ -5,6 +5,8 @@ namespace Driver\BackEnd;
 
 use Driver\BackEnd\Controllers\GetDataController;
 use Driver\BackEnd\Controllers\UploadDataController;
+use Driver\BackEnd\Controllers\SearchDataController; 
+
 // $routes = [
 //     "POST" => [
 //         "/GetData" => GetDataController::class,
@@ -12,18 +14,25 @@ use Driver\BackEnd\Controllers\UploadDataController;
 // ]
 
 class App {
-    public static function init($requestUri){
-        // se l'url contine getgata chiamo getdata
+    public static function init($requestUri)
+    {
+        $uriComponents = explode('?', $requestUri);
+        $path = $uriComponents[0];
+        //legge sempre la prima parte dellúri prima del ?
+
         $controller = null;
-        if ($requestUri ==  "/GetData") {
+        if ($path === "/GetData") {
             $controller = new GetDataController();
-        } else if ($requestUri ==  "/UploadData") {
+        } else if ($path === "/UploadData") {
             $controller = new UploadDataController();
+        } else if ($path === "/SearchData") { 
+            $controller = new SearchDataController();
         }
         
         else {
-            //TODO ritornare errore bello
-            echo "404 not found";
+            http_response_code(404);
+            echo json_encode(['error' => '404 not found']);
+            return;
         }
 
         ini_set('memory_limit', '256M');
