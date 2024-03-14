@@ -2,11 +2,15 @@
 import axios from 'axios';
 
 export default {
-    name: 'EpidemicAlert',
+    
     data() {
+        let currentDate = new Date();
+        let formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
         return {
             epidemics: [],
-            caseThreshold: 50 // Valore di default per il numero di casi
+            caseThreshold: 3, 
+            startDate: '1900-01-01',
+            endDate: formattedDate
         };
     },
 
@@ -14,7 +18,9 @@ export default {
         detectEpidemics() {
             axios.get(`http://localhost:8000/AnalyzeData`, {
                 params: {
-                    caseThreshold: this.caseThreshold
+                    caseThreshold: this.caseThreshold,
+                    startDate: this.startDate,
+                    endDate: this.endDate
                 }
             })
                 .then(response => {
@@ -31,6 +37,8 @@ export default {
 <template>
     <div>
         <input type="number" v-model="caseThreshold" placeholder="Numero di casi per l'epidemia">
+        <input type="date" v-model="startDate" placeholder="Data Inizio">
+        <input type="date" v-model="endDate" placeholder="Data Fine">
         <button @click="detectEpidemics()">Detect Epidemics</button>
 
         <div v-if="epidemics.length">
