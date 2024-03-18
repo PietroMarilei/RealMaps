@@ -7,11 +7,11 @@ import AnalyzeData from "./components/AnalyzeData.vue"
 </script>
 
 <template>
-  <HelloWorld msg="RealMaps Test" />
-  <AnalyzeData/>
-   <FileUpload />
-  <SearchData />
+  <HelloWorld msg="CSV Displayer" />
+  <FileUpload />
+  <!-- <SearchData /> -->
   <DataDisplayer />
+  <AnalyzeData/>
 </template>
 
 <style scoped>

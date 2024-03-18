@@ -21,11 +21,15 @@ class AnalyzeDataController extends Controller
         $database = new Database();
         $db = $database->getConnection();
 
-        $query = "SELECT Location, Diagnosis, COUNT(Diagnosis) as Count 
-                  FROM patients 
-                  WHERE DiagnosisDate BETWEEN :startDate AND :endDate
-                  GROUP BY Location, Diagnosis 
-                  HAVING Count > :caseThreshold";
+        // Modifica la query per includere le giuste tabelle e campi
+        $query = "SELECT diagnoses.location, diseases.name AS disease_name, COUNT(*) as CaseCount
+              FROM diagnoses
+              JOIN diseases ON diagnoses.disease_id = diseases.id
+              WHERE diagnoses.diagnosis_date BETWEEN :startDate AND :endDate
+              GROUP BY diagnoses.location, diseases.name
+              HAVING CaseCount >= :caseThreshold
+              ORDER BY CaseCount DESC
+";
 
         $stmt = $db->prepare($query);
         $stmt->bindParam(':caseThreshold', $caseThreshold, \PDO::PARAM_INT);

@@ -34,7 +34,7 @@ class UploadDataController extends Controller
                 $sanitizedRowData[1],  // name 2
                 $sanitizedRowData[2], // birthdate
                 $sanitizedRowData[3], //Email
-                $sanitizedRowData[8]]); 
+                $sanitizedRowData[8]]); //stato
             $patientId = $db->lastInsertId();
 
             // Check if the disease exists and insert it if it doesn't
