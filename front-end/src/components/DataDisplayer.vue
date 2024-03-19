@@ -6,9 +6,11 @@ export default {
         return {
 
             results: [],
+            sortColumn: 'id',
+            sortDirection: 'ASC',
             // pagination
             currentPage: 1,
-            recordsPerPage: 100, 
+            recordsPerPage: 30, 
             totalRecords: 0 
         };
     },
@@ -19,7 +21,9 @@ export default {
             const params = new URLSearchParams({
                 ...this.search,
                 page: this.currentPage,
-                limit: this.recordsPerPage
+                limit: this.recordsPerPage,
+                sort: this.sortColumn,
+                direction: this.sortDirection,
             }).toString();
 
             axios.get(`http://localhost:8000/GetData?${params}`)
@@ -31,6 +35,15 @@ export default {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+        },
+        changeSort(column) {
+            if (this.sortColumn === column) {
+                this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+            } else {
+                this.sortColumn = column;
+                this.sortDirection = 'ASC';
+            }
+            this.doSearch();
         },
      
         changePage(newPage) {
@@ -48,14 +61,14 @@ export default {
 
 <template>
     <div>
-        <table class="table table-dark">
+        <table class="table ">
             <thead>
                 <tr>
-                    <th scope="col">Diagnose.id</th>
+                    <th scope="col" @click="changeSort('id')">&#x2023; Diagnose.id</th>
                     <th scope="col">Disease Name</th>
                     <th scope="col">symptoms</th>
                     <th scope="col">Location</th>
-                    <th scope="col">diagnosis_date</th>
+                    <th scope="col" @click="changeSort('diagnosis_date')">&#x2023; Diagnosis Date</th>
                     <th scope="col">patient_id</th>
                 </tr>
             </thead>
@@ -68,7 +81,6 @@ export default {
                     <td>{{ result.diagnosis_date }}</td>
                     <td>{{ result.patient_id }}</td>
                 </tr>
-
             </tbody>
         </table>
 

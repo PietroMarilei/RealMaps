@@ -57,6 +57,7 @@ export default {
 };
 </script>
 
+
 <template>
     <div>
         <input v-model="search.FirstName" placeholder="Nome" />
