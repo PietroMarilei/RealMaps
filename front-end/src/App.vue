@@ -9,9 +9,9 @@ import AnalyzeData from "./components/AnalyzeData.vue"
 <template>
   <HelloWorld msg="CSV Displayer" />
   <FileUpload />
-  <!-- <SearchData /> -->
   <DataDisplayer />
   <AnalyzeData/>
+  <SearchData />
 </template>
 
 <style scoped>

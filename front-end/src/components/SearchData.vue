@@ -5,18 +5,13 @@ export default {
     data() {
         return {
             search: {
-                FirstName: '',
-                LastName: '',
                 BirthDate: '',
-                Email: '',
                 Symptoms: '',
-                Diagnosis: '',
+                Disease: '', 
                 Location: '',
-                DiagnosisDate: '',
-                PatientStatus: ''
-
+                Diagnosis_date: '',
             },
-            patients: []
+            results: []
         };
     },
     methods: {
@@ -25,56 +20,49 @@ export default {
 
             axios.get(`http://localhost:8000/SearchData?${params}`)
                 .then(response => {
-                    this.patients = response.data;
-                    //svuotamento campi
-                    this.search = {
-                        FirstName: '',
-                        LastName: '',
-                        BirthDate: '',
-                        Email: '',
-                        Symptoms: '',
-                        Diagnosis: '',
-                        Location: '',
-                        DiagnosisDate: '',
-                        PatientStatus: ''
-
-                    }
+                    this.results = response.data;
+                    console.log(response.data);
+                    Object.keys(this.search).forEach(key => {
+                        this.search[key] = '';
+                    });
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    if (error.response) {
-                        console.error(error.response.data);
-                        console.error(error.response.status);
-                        console.error(error.response.headers);
-                    } else if (error.request) {
-                        console.error(error.request);
-                    } else {
-                        console.error('Error', error.message);
-                    }
                 });
         }
     }
 };
 </script>
 
-
 <template>
     <div>
-        <input v-model="search.FirstName" placeholder="Nome" />
-        <input v-model="search.LastName" placeholder="Cognome" />
-        <input v-model="search.BirthDate" placeholder="Data di nascita" type="date" />
-        <input v-model="search.Email" placeholder="Email" type="email" />
-        <input v-model="search.Symptoms" placeholder="Sintomi" />
-        <input v-model="search.Diagnosis" placeholder="Diagnosi" />
         <input v-model="search.Location" placeholder="Località" />
-        <input v-model="search.DiagnosisDate" placeholder="Data di diagnosi" type="date" />
-        <input v-model="search.PatientStatus" placeholder="Stato del paziente" />
+        <input v-model="search.BirthDate" placeholder="Data di nascita" type="date" />
+        <input v-model="search.Symptoms" placeholder="Sintomi" />
+        <input v-model="search.Disease" placeholder="Malattia" />
+        <input v-model="search.Diagnosis_date" placeholder="Data di diagnosi" type="date" />
 
         <button @click="doSearch">Cerca</button>
 
-        <div v-for="patient in patients" :key="patient.id">
-            {{ patient.FirstName }} {{ patient.LastName }} {{ patient.Email }} - {{ patient.Symptoms }} - {{ patient.Diagnosis }} - {{ patient.Location }} - {{ patient.DiagnosisDate }} - {{ patient.PatientStatus }}
-
-        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Disease Name</th>
+                    <th scope="col">Symptoms</th>
+                    <th scope="col">Diagnosis Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(result, i) in results" :key="i">
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>{{ result.location }}</td>
+                    <td>{{ result.disease_name }}</td>
+                    <td>{{ result.symptoms }}</td>
+                    <td>{{ result.diagnosis_date }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>

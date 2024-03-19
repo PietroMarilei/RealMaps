@@ -41,10 +41,10 @@ export default {
 
 <template>
     <div>
-        <h2>Carica File CSV</h2>
-        <form @submit.prevent="submitFile">
-            <input type="file" @change="handleFileUpload" />
-            <button type="submit">Carica</button>
+        <form @submit.prevent="submitFile" class="p-3">
+            <label class="m-1 d-block fs-3" for="fileinput">Load CSV</label>
+            <input type="file" @change="handleFileUpload" class="form-control-file" id="fileinput" />
+            <button type="submit" class="btn btn-danger">Carica</button>
         </form>
         <div v-if="uploadStatus">
             {{ uploadStatus }}
