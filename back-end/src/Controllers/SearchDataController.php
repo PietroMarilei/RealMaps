@@ -9,7 +9,7 @@ class SearchDataController extends Controller
     public function run()
     {
         $criteria = array_map(array($this, 'sanitizeInput'), $_GET);
-        $currentPage = isset($criteria['page']) ? intval($criteria['page']) : 1; // Ottieni la pagina corrente, predefinita è la pagina 1
+        $currentPage = isset($criteria['page']) ? intval($criteria['page']) : 1;
         $results = $this->searchData($criteria, $currentPage);
         $totalPages = $this->calculateTotalPages($this->getResultsCount($criteria), isset($criteria['per_page']) ? $criteria['per_page'] : 30);
         echo json_encode(['results' => $results, 'total_pages' => $totalPages]);
@@ -23,11 +23,12 @@ class SearchDataController extends Controller
         $offset = ($currentPage - 1) * $perPage;
 
 
-        $query = "SELECT diagnoses.location, diseases.name AS disease_name, diagnoses.symptoms, diagnoses.diagnosis_date 
-                  FROM diagnoses
-                  INNER JOIN patients ON diagnoses.patient_id = patients.id
-                  INNER JOIN diseases ON diagnoses.disease_id = diseases.id
-                  WHERE 1=1";
+        $query = "SELECT diagnoses.id AS diagnose_id, diagnoses.location, diseases.name AS disease_name, diagnoses.symptoms, diagnoses.diagnosis_date 
+          FROM diagnoses
+          INNER JOIN patients ON diagnoses.patient_id = patients.id
+          INNER JOIN diseases ON diagnoses.disease_id = diseases.id
+          WHERE 1=1";
+
 
         $params = [];
 
@@ -57,6 +58,10 @@ class SearchDataController extends Controller
             $query .= " AND diagnoses.diagnosis_date <= ?";
             $params[] = $criteria['diagnosis_date_end'];
         }
+        $orderBy = isset($criteria['order_by']) ? $criteria['order_by'] : 'diagnoses.id';
+        $order = isset($criteria['order']) && strtolower($criteria['order']) === 'desc' ? 'DESC' : 'ASC';
+
+        $query .= " ORDER BY $orderBy $order"; 
         $query .= " LIMIT $perPage OFFSET $offset";
         
         $stmt = $db->prepare($query);

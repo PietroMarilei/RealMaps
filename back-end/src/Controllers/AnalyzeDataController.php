@@ -29,6 +29,7 @@ class AnalyzeDataController extends Controller
               GROUP BY diagnoses.location, diseases.name
               HAVING CaseCount >= :caseThreshold
               ORDER BY CaseCount DESC
+              LIMIT 30
 ";
 
         $stmt = $db->prepare($query);

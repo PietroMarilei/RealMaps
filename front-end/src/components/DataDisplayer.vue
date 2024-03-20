@@ -50,6 +50,19 @@ export default {
             this.currentPage = newPage;
             this.doSearch(); 
         },
+
+        totalPages() {
+            return Math.ceil(this.totalRecords/ this.recordsPerPage )
+        },
+        changeSort(column) {
+            if (this.sortColumn === column) {
+                this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+            } else {
+                this.sortColumn = column;
+                this.sortDirection = 'ASC';
+            }
+            this.doSearch();
+        },
     },
     mounted() {
         this.doSearch(); 
@@ -64,12 +77,13 @@ export default {
         <table class="table ">
             <thead>
                 <tr>
-                    <th scope="col" @click="changeSort('id')">&#x2023; Diagnose.id</th>
-                    <th scope="col">Disease Name</th>
-                    <th scope="col">symptoms</th>
-                    <th scope="col">Location</th>
-                    <th scope="col" @click="changeSort('diagnosis_date')">&#x2023; Diagnosis Date</th>
-                    <th scope="col">patient_id</th>
+                    <th scope="col" class="hover" @click="changeSort('diagnose_id')">Diagnose ID</th>
+                    <th scope="col" class="hover" @click="changeSort('diseases.name')">Disease Name</th>
+                    <th scope="col" class="hover" @click="changeSort('symptoms')">Symptoms</th>
+                    <th scope="col" class="hover" @click="changeSort('location')">Location</th>
+                    <th scope="col" class="hover" @click="changeSort('diagnosis_date')">Diagnosis Date</th>
+                    <th scope="col" class="hover" @click="changeSort('patient_id')">Patient ID</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -85,6 +99,11 @@ export default {
         </table>
 
         <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Precedente</button>
+        currentPage - {{ currentPage }} - totalPages {{ totalPages() }}
         <button @click="changePage(currentPage + 1)" :disabled="currentPage * recordsPerPage >= totalRecords">Successivo</button>
     </div>
 </template>
+
+<style scoped>
+
+</style>

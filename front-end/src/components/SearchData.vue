@@ -44,6 +44,15 @@ export default {
                 this.currentPage--;
                 this.doSearch();
             }
+        },
+        changeOrderBy(field) {
+            if (this.search.order_by === field) {
+                this.search.order = this.search.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.search.order_by = field;
+                this.search.order = 'asc';
+            }
+            this.doSearch();
         }
     }
 };
@@ -64,16 +73,17 @@ export default {
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Disease Name</th>
-                    <th scope="col">Symptoms</th>
-                    <th scope="col">Diagnosis Date</th>
+                    <th scope="col" class="hover" @click="changeOrderBy('diagnose_id')">Diagnose ID</th>
+                    <th scope="col" class="hover" @click="changeOrderBy('location')">Location</th>
+                    <th scope="col" class="hover" @click="changeOrderBy('disease_name')">Disease Name</th>
+                    <th scope="col" class="hover" @click="changeOrderBy('symptoms')">Symptoms</th>
+                    <th scope="col" class="hover" @click="changeOrderBy('diagnosis_date')">Diagnosis Date</th>
+
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(result, i) in results" :key="i">
-                    <th scope="row">{{ i + 1 }}</th>
+                    <th scope="row">{{ result.diagnose_id}}</th>
                     <td>{{ result.location }}</td>
                     <td>{{ result.disease_name }}</td>
                     <td>{{ result.symptoms }}</td>
@@ -82,6 +92,7 @@ export default {
             </tbody>
         </table>
         <button @click="goToPreviousPage" :disabled="currentPage === 1">Precedente</button>
+        total pages {{ totalPages }} - currentPage {{ currentPage }}
         <button @click="goToNextPage" :disabled="currentPage === totalPages">Successiva</button>
     </div>
 </template>
