@@ -8,30 +8,27 @@ class SearchDataController extends Controller
 {
     public function run()
     {
-        // Prevent SQL Injection
         $criteria = array_map(array($this, 'sanitizeInput'), $_GET);
-        $pagination = $this->searchData($criteria);
-        echo json_encode($pagination);
+        $currentPage = isset($criteria['page']) ? intval($criteria['page']) : 1; // Ottieni la pagina corrente, predefinita è la pagina 1
+        $results = $this->searchData($criteria, $currentPage);
+        $totalPages = $this->calculateTotalPages($this->getResultsCount($criteria), isset($criteria['per_page']) ? $criteria['per_page'] : 30);
+        echo json_encode(['results' => $results, 'total_pages' => $totalPages]);
     }
 
-    private function searchData($criteria)
+    private function searchData($criteria, $currentPage = 1, $perPage = 30)
     {
+
         $database = new Database();
         $db = $database->getConnection();
+        $offset = ($currentPage - 1) * $perPage;
 
-        // Pagination settings
-        $resultsPerPage = 10;
-        $page = isset($criteria['page']) ? (int)$criteria['page'] : 1;
-        $offset = ($page - 1) * $resultsPerPage;
 
-        // Start building the query
         $query = "SELECT diagnoses.location, diseases.name AS disease_name, diagnoses.symptoms, diagnoses.diagnosis_date 
                   FROM diagnoses
                   INNER JOIN patients ON diagnoses.patient_id = patients.id
                   INNER JOIN diseases ON diagnoses.disease_id = diseases.id
                   WHERE 1=1";
 
-        // Initialize parameters array
         $params = [];
 
         if (!empty($criteria['symptoms'])) {
@@ -41,7 +38,7 @@ class SearchDataController extends Controller
 
         if (!empty($criteria['disease'])) {
             $query .= " AND diseases.name = ?";
-            $params[] =  $criteria['disease'];
+            $params[] = $criteria['disease'];
         }
 
         if (!empty($criteria['location'])) {
@@ -49,61 +46,25 @@ class SearchDataController extends Controller
             $params[] = $criteria['location'];
         }
 
-        // Gestione dell'intervallo di diagnosis_date
         if (!empty($criteria['diagnosis_date_start']) && !empty($criteria['diagnosis_date_end'])) {
             $query .= " AND diagnoses.diagnosis_date BETWEEN ? AND ?";
             $params[] = $criteria['diagnosis_date_start'];
             $params[] = $criteria['diagnosis_date_end'];
-        } else if (!empty($criteria['diagnosis_date_start'])) {
-            // Solo data di inizio
+        } elseif (!empty($criteria['diagnosis_date_start'])) {
             $query .= " AND diagnoses.diagnosis_date >= ?";
             $params[] = $criteria['diagnosis_date_start'];
-        } else if (!empty($criteria['diagnosis_date_end'])) {
-            // Solo data di fine
+        } elseif (!empty($criteria['diagnosis_date_end'])) {
             $query .= " AND diagnoses.diagnosis_date <= ?";
             $params[] = $criteria['diagnosis_date_end'];
         }
-        // pagination
-        $query .= " ORDER BY diagnoses.diagnosis_date DESC LIMIT ? OFFSET ?";
-        // Execute query
+        $query .= " LIMIT $perPage OFFSET $offset";
+        
         $stmt = $db->prepare($query);
-        $paramIndex = 1;
-     
-        // Bind filter parameters
-        foreach ($params as $param) {
-            $stmt->bindValue($paramIndex++, $param);
+        foreach ($params as $index => $param) {
+            $stmt->bindValue($index + 1, $param);
         }
-
-        // Bind LIMIT and OFFSET parameters (must be integers)
-        $stmt->bindValue($paramIndex++, $resultsPerPage, \PDO::PARAM_INT);
-        $stmt->bindValue($paramIndex, $offset, \PDO::PARAM_INT);
         $stmt->execute();
-
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        // calcola quante sono le pagine in tutto
-        $countQuery = "SELECT COUNT(*) AS total FROM diagnoses
-                       INNER JOIN patients ON diagnoses.patient_id = patients.id
-                       INNER JOIN diseases ON diagnoses.disease_id = diseases.id
-                       WHERE 1=1";
-
-        // Reusing the same filter parameters
-        $countStmt = $db->prepare($countQuery);
-        $paramIndex = 1;
-
-        foreach ($params as $param) {
-            $countStmt->bindValue($paramIndex++, $param);
-        }
-
-        $countStmt->execute();
-        $totalCount = $countStmt->fetch(\PDO::FETCH_ASSOC)['total'];
-        $totalPages = ceil($totalCount / $resultsPerPage);
-
-        // Return data with pagination info
-        return [
-            'results' => $results,
-            'totalPages' => $totalPages
-        ];
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function sanitizeInput($input)
@@ -113,4 +74,59 @@ class SearchDataController extends Controller
         $input = htmlspecialchars($input);
         return $input;
     }
+
+    public function calculateTotalPages($resultsCount, $perPage = 30)
+    {
+        return ceil($resultsCount / $perPage);
+    }
+    private function getResultsCount($criteria)
+    {
+        $database = new Database();
+        $db = $database->getConnection();
+
+        $query = "SELECT COUNT(*) AS total_results
+              FROM diagnoses
+              INNER JOIN patients ON diagnoses.patient_id = patients.id
+              INNER JOIN diseases ON diagnoses.disease_id = diseases.id
+              WHERE 1=1";
+
+        $params = [];
+
+        if (!empty($criteria['symptoms'])) {
+            $query .= " AND diagnoses.symptoms LIKE ?";
+            $params[] = "%" . $criteria['symptoms'] . "%";
+        }
+
+        if (!empty($criteria['disease'])) {
+            $query .= " AND diseases.name = ?";
+            $params[] = $criteria['disease'];
+        }
+
+        if (!empty($criteria['location'])) {
+            $query .= " AND diagnoses.location = ?";
+            $params[] = $criteria['location'];
+        }
+
+        if (!empty($criteria['diagnosis_date_start']) && !empty($criteria['diagnosis_date_end'])) {
+            $query .= " AND diagnoses.diagnosis_date BETWEEN ? AND ?";
+            $params[] = $criteria['diagnosis_date_start'];
+            $params[] = $criteria['diagnosis_date_end'];
+        } elseif (!empty($criteria['diagnosis_date_start'])) {
+            $query .= " AND diagnoses.diagnosis_date >= ?";
+            $params[] = $criteria['diagnosis_date_start'];
+        } elseif (!empty($criteria['diagnosis_date_end'])) {
+            $query .= " AND diagnoses.diagnosis_date <= ?";
+            $params[] = $criteria['diagnosis_date_end'];
+        }
+
+        $stmt = $db->prepare($query);
+        foreach ($params as $index => $param) {
+            $stmt->bindValue($index + 1, $param);
+        }
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $row['total_results'];
+    }
+
 }

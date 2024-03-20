@@ -27,7 +27,7 @@ export default {
             axios.get(`http://localhost:8000/SearchData?${params}`)
                 .then(response => {
                     this.results = response.data.results;
-                    this.totalPages = response.data.totalPages; // Supponendo che il backend invii il numero totale di pagine
+                    this.totalPages = response.data.total_pages; 
                     console.log(response.data);
                 })
                 .catch(error => {
