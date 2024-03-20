@@ -44,7 +44,7 @@ export default {
         <form @submit.prevent="submitFile" class="p-3">
             <label class="m-1 d-block fs-3" for="fileinput">Load CSV</label>
             <input type="file" @change="handleFileUpload" class="form-control-file" id="fileinput" />
-            <button type="submit" class="btn btn-danger">Carica</button>
+            <button type="submit" class="btn btn-danger">&#128190; Load</button>
         </form>
         <div v-if="uploadStatus">
             {{ uploadStatus }}

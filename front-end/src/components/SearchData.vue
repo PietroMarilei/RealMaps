@@ -97,7 +97,7 @@ export default {
 
         <div class="row ">
             <div class="col ">
-                <button class="" @click="doSearch">Search</button>
+                <button class="" @click="doSearch">&#128269; Search</button>
             </div>
         </div>
 
