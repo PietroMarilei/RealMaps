@@ -10,7 +10,9 @@ import AnalyzeData from "./components/AnalyzeData.vue"
   <HelloWorld msg="CSV Displayer" />
   <FileUpload />
   <DataDisplayer />
+  <hr>
   <AnalyzeData/>
+  <hr>
   <SearchData />
 </template>
 

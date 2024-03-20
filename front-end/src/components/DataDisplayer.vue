@@ -73,34 +73,54 @@ export default {
 </script>
 
 <template>
-    <div>
-        <table class="table ">
-            <thead>
-                <tr>
-                    <th scope="col" class="hover" @click="changeSort('diagnose_id')">Diagnose ID</th>
-                    <th scope="col" class="hover" @click="changeSort('diseases.name')">Disease Name</th>
-                    <th scope="col" class="hover" @click="changeSort('symptoms')">Symptoms</th>
-                    <th scope="col" class="hover" @click="changeSort('location')">Location</th>
-                    <th scope="col" class="hover" @click="changeSort('diagnosis_date')">Diagnosis Date</th>
-                    <th scope="col" class="hover" @click="changeSort('patient_id')">Patient ID</th>
+    <div class="container">
 
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="result in results">
-                    <th scope="row">{{ result.id }}</th>
-                    <td>{{ result.disease_name }}</td>
-                    <td>{{ result.symptoms }}</td>
-                    <td>{{ result.location }}</td>
-                    <td>{{ result.diagnosis_date }}</td>
-                    <td>{{ result.patient_id }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col">
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="hover" @click="changeSort('diagnose_id')">Diagnose ID</th>
+                        <th scope="col" class="hover" @click="changeSort('diseases.name')">Disease Name</th>
+                        <th scope="col" class="hover" @click="changeSort('symptoms')">Symptoms</th>
+                        <th scope="col" class="hover" @click="changeSort('location')">Location</th>
+                        <th scope="col" class="hover" @click="changeSort('diagnosis_date')">Diagnosis Date</th>
+                        <th scope="col" class="hover" @click="changeSort('patient_id')">Patient ID</th>
+        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="result in results">
+                        <th scope="row">{{ result.id }}</th>
+                        <td>{{ result.disease_name }}</td>
+                        <td>{{ result.symptoms }}</td>
+                        <td>{{ result.location }}</td>
+                        <td>{{ result.diagnosis_date }}</td>
+                        <td>{{ result.patient_id }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Precedente</button>
-        currentPage - {{ currentPage }} - totalPages {{ totalPages() }}
-        <button @click="changePage(currentPage + 1)" :disabled="currentPage * recordsPerPage >= totalRecords">Successivo</button>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-4">
+                <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Prev</button>
+
+            </div>
+            <div class="col-4">
+                currentPage - {{ currentPage }} - totalPages {{ totalPages() }}
+
+            </div>
+            <div class="col-4">
+                <button @click="changePage(currentPage + 1)" :disabled="currentPage * recordsPerPage >= totalRecords">Next</button>
+
+            </div>
+
+        </div>
+        
+    </div>
+   
+
     </div>
 </template>
 

@@ -18,7 +18,6 @@ class Database
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../'); 
         $dotenv->load();
 
-        // Assegna i valori delle variabili d'ambiente alle proprietà della classe
         $this->host = $_ENV['DB_HOST'];
         $this->db_name = $_ENV['DB_NAME'];
         $this->username = $_ENV['DB_USER'];
