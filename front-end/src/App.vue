@@ -1,5 +1,5 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+
 import FileUpload from "./components/FileUpload.vue"
 import DataDisplayer from "./components/DataDisplayer.vue"
 import SearchData from "./components/SearchData.vue"
@@ -7,11 +7,11 @@ import AnalyzeData from "./components/AnalyzeData.vue"
 </script>
 
 <template>
-  <HelloWorld msg="CSV Displayer" />
+  <h1>CSV Displayer</h1>
   <FileUpload />
   <DataDisplayer />
   <hr>
-  <AnalyzeData/>
+  <AnalyzeData />
   <hr>
   <SearchData />
 </template>
