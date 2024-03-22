@@ -1,5 +1,7 @@
 
 <script>
+import axios from 'axios';
+import config from '../config.js';
 export default {
     data() {
         return {
@@ -22,13 +24,13 @@ export default {
 
             this.uploadStatus = 'Caricamento in corso...';
 
-            fetch('http://localhost:8000/UploadData', { 
-                method: 'POST',
-                body: formData,
+            axios.post(`${config.API_BASE_URL}/UploadData`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
-                .then(response => response.json())
-                .then(data => {
-                    this.uploadStatus = data.message; // Mostra il messaggio di risposta dall'API
+                .then(response => {
+                    this.uploadStatus = response.data.message;
                 })
                 .catch(error => {
                     console.error('Error:', error);

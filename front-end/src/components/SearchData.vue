@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios';
-
+import config from '../config.js';
 export default {
     data() {
         return {
@@ -11,8 +11,8 @@ export default {
                 symptoms: '',
                 disease: '',
                 location: '',
-                diagnosis_date_start: '',  // Data di inizio per l'intervallo di diagnosi
-                diagnosis_date_end: '',    // Data di fine per l'intervallo di diagnosi
+                diagnosis_date_start: '',  
+                diagnosis_date_end: '',    
             },
             results: []
         };
@@ -21,10 +21,10 @@ export default {
         doSearch() {
             const params = new URLSearchParams({
                 ...this.search,
-                page: this.currentPage, // Includi la pagina corrente nella ricerca
+                page: this.currentPage, 
             }).toString();
 
-            axios.get(`http://localhost:8000/SearchData?${params}`)
+            axios.get(`${config.API_BASE_URL}/SearchData?${params}`)
                 .then(response => {
                     this.results = response.data.results;
                     this.totalPages = response.data.total_pages;

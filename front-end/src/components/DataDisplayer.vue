@@ -42,7 +42,7 @@
 
 <script>
 import axios from 'axios';
-
+import config from '../config.js';
 export default {
     data() {
         return {
@@ -63,7 +63,7 @@ export default {
                 direction: this.sortDirection,
             }).toString();
 
-            axios.get(`http://localhost:8000/GetData?${params}`)
+            axios.get(`${config.API_BASE_URL}/GetData?${params}`)
                 .then(response => {
                     this.results = response.data.data;
                     this.totalRecords = response.data.totalRecords;

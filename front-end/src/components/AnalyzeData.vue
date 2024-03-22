@@ -52,6 +52,7 @@
 
 <script>
 import axios from 'axios';
+import config from '../config.js';
 
 export default {
     data() {
@@ -66,7 +67,7 @@ export default {
     },
     methods: {
         detectEpidemics() {
-            axios.get(`http://localhost:8000/AnalyzeData`, {
+            axios.get(`${config.API_BASE_URL}/AnalyzeData`, {
                 params: {
                     caseThreshold: this.caseThreshold,
                     startDate: this.startDate,
